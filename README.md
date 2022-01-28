@@ -10,11 +10,9 @@ This is a template that will setup a Dapr development environment in `GitHub Cod
 
 For ideas, feature requests, and discussions, please use GitHub issues so we can collaborate and follow up.
 
-This Codespace is tested with `zsh` and `oh-my-zsh` - it "should" work with bash but hasn't been fully tested. For the HoL, please use zsh to avoid any issues.
+This Codespace is tested with `zsh` and `oh-my-zsh` - it "should" work with bash but hasn't been fully tested.
 
-You can run the `dev container` locally and you can also connect to the Codespace with a local version of VS Code.
-
-Please experiment and add any issues to the GitHub Discussion. We LOVE PRs!
+Please experiment and add any issues to the GitHub Issues.
 
 The motivation for creating and using Codespaces is highlighted by this [GitHub Blog Post](https://github.blog/2021-08-11-githubs-engineering-team-moved-codespaces/). "It eliminated the fragility and single-track model of local development environments, but it also gave us a powerful new point of leverage for improving GitHub’s developer experience."
 
@@ -24,7 +22,7 @@ Cory Wilkerson, Senior Director of Engineering at GitHub, recorded a podcast whe
 
 > You must be a member of the Microsoft OSS and CSE-Labs GitHub organizations
 
-- Instructions for joining the GitHub orgs are [here](https://github.com/cse-labs/moss)
+- Instructions for joining the GitHub orgs are here <https://github.com/cse-labs/moss>
   - If you don't see an `Open in Codespaces` option, you are not part of the organization(s)
 
 - Click the `Code` button on this repo
@@ -34,55 +32,50 @@ Cory Wilkerson, Senior Director of Engineering at GitHub, recorded a podcast whe
 
 ![Create Codespace](./images/OpenWithCodespaces.jpg)
 
-## Dapr Lab
+## Create and run a Web API app with Dapr
 
-> make sure you are in the root of the repo
+> Note - this lab currently uses dotnet 5
 
-### Create and run a Web API app with Dapr
+- Create a new dotnet webapi project
 
-Create a new dotnet webapi project
+  ```bash
 
-```bash
+  mkdir -p dapr-app
+  cd dapr-app
+  dotnet new webapi --no-https
 
-mkdir -p dapr-app
-cd dapr-app
-dotnet new webapi --no-https
+  ```
 
-```
+- Run the app with Dapr
 
-Run the app with Dapr
+  ```bash
 
-```bash
+  dapr run -a myapp -p 5000 -H 3500 -- dotnet run
 
-dapr run -a myapp -p 5000 -H 3500 -- dotnet run
+  ```
 
-```
+- Check the endpoints
+  - open `dapr.http`
+    - click on the `dotnet app` `send request` link
+    - click on the `dapr endpoint` `send request` link
 
-Check the endpoints
+- Open Zipkin
+  - Click on the `Ports` tab
+    - Open the `Zipkin` link
+    - Click on `Run Query`
+      - Explore the traces generated automatically with Dapr
+- Stop the app by pressing `ctl-c`
 
-- open `dapr.http`
-  - click on the `dotnet app` `send request` link
-  - click on the `dapr endpoint` `send request` link
+- Clean up
 
-Open Zipkin
+  ```bash
 
-- Click on the `Ports` tab
-  - Open the `Zipkin` link
-  - Click on `Run Query`
-    - Explore the traces generated automatically with Dapr
+  cd ..
+  rm -rf dapr-app
 
-Stop the app by pressing `ctl-c`
+  ```
 
-Clean up
-
-```bash
-
-cd ..
-rm -rf dapr-app
-
-```
-
-### Add Dapr SDK to the weather app
+## Add Dapr SDK to the weather app
 
 > Changes to the app have already been made and are detailed below
 
@@ -105,12 +98,14 @@ rm -rf dapr-app
   - `Get`
     - Added the `daprClient` via Dependency Injection
     - Retrieved the model from the `State Store`
-  - Set a breakpoint on lines 30 and 38
+
+> Set a breakpoint on lines 30 and 38 of `weather/Controllers/WeatherForecastController.cs`
 
 ### Run the Dapr weather app
 
 - Click on one of the VS Code panels to make sure it has the focus, then Press `F5` to run
-- Alternatively, you can use the `hamburger` menu, then `Run` and `Start Debugging`
+  - If you press F5 without a panel having focus, the browser will refresh and reload Codespaces
+  - Alternatively, you can use the `hamburger` menu, then `Run` and `Start Debugging`
 - Open `dapr.http`
   - Send a message via Dapr
     - Click on `Send Request` under `post to Dapr`
